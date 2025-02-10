@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Model</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/lucide.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/lucide.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary-color: #00d2ff;
+            --secondary-color: #3a7bd5;
+            --dark-bg: #0a0a0a;
+            --dark-card: #151515;
+            --text-primary: #ffffff;
+            --text-secondary: #b3b3b3;
+            --accent: #00d2ff;
+            --gradient: linear-gradient(135deg, #00d2ff 0%, #3a7bd5 100%);
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .navbar {
+            background: rgba(10, 10, 10, 0.95);
+            padding: 1rem 5%;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-link {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-size: 1.1rem;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background: var(--gradient);
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: var(--primary-color);
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .hero {
+            height: 100vh;
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('/api/placeholder/1920/1080');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding-top: 60px;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            padding: 3rem;
+            background: rgba(21, 21, 21, 0.8);
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(20px);
+        }
+
+        .hero-title {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            color: var(--text-secondary);
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 1rem 3rem;
+            background: var(--gradient);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            border: none;
+            box-shadow: 0 4px 15px rgba(0,210,255,0.3);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0,210,255,0.4);
+        }
+
+        .section {
+            padding: 6rem 5%;
+            background: var(--dark-bg);
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            text-align: center;
+            color: var(--text-primary);
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 100px;
+            height: 4px;
+            background: var(--gradient);
+            margin: 10px auto;
+            border-radius: 2px;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 3rem;
+            margin: 4rem 0;
+        }
+
+        .feature-card {
+            background: var(--dark-card);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary-color);
+            box-shadow: 0 15px 40px rgba(0,210,255,0.2);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+
+        .feature-title {
+            color: var(--text-primary);
+            margin: 1rem 0;
+            font-size: 1.5rem;
+        }
+
+        .feature-card p {
+            color: var(--text-secondary);
+        }
+
+        .testimonials {
+            background: var(--dark-card);
+            padding: 6rem 2rem;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .testimonial-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .testimonial-wrapper {
+            padding: 20px 0;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .testimonial-track {
+            display: flex;
+            flex-direction: row;
+            gap: 2rem;
+            position: relative;
+            animation: slideRTL 20s linear infinite; 
+        }
+
+        @keyframes slideRTL {
+            0% {
+                transform: translateX(-100%);
+            }
+            100% {
+                transform: translateX(100%);
+            }
+        }
+
+        .testimonial-card {
+            flex: 0 0 350px;
+            background: var(--dark-bg);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.4s ease;
+            opacity: 0.9;
+        }
+
+
+        .testimonial-wrapper::before,
+        .testimonial-wrapper::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            height: 100%;
+            width: 150px;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .testimonial-wrapper::before {
+            right: 0;
+            background: linear-gradient(to left, var(--dark-card), transparent);
+        }
+
+        .testimonial-wrapper::after {
+            left: 0;
+            background: linear-gradient(to right, var(--dark-card), transparent);
+        }
+        
+
+        .footer {
+            background: var(--dark-card);
+            color: var(--text-secondary);
+            text-align: center;
+            padding: 3rem 2rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .contact-info {
+            margin-top: 1rem;
+        }
+
+        .icon {
+            width: 48px;
+            height: 48px;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                gap: 1rem;
+            }
+            
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .section {
+                padding: 4rem 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#" class="logo">Business Model</a>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">المنتجات</a>
+                <a href="Main.html" class="nav-link">من نحن</a>
+                <a href="#" class="nav-link">تواصل معنا</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1 class="hero-title">Business Model</h1>
+            <p class="hero-subtitle">اكتشف مجموعتنا الحصرية من الأزياء العصرية</p>
+            <a href="index.html" class="cta-button">تسوق الآن</a>
+        </div>
+    </section>
+
+    <section class="section">
+        <h2 class="section-title">مميزاتنا</h2>
+        <div class="features">
+            <div class="feature-card">
+                <svg class="icon" viewBox="0 0 100 100">
+                    <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" stroke-width="2"/>
+                    <path d="M35 50 C35 35, 65 35, 65 50" fill="none" stroke="currentColor" stroke-width="4"/>
+                    <circle cx="35" cy="50" r="8" fill="currentColor"/>
+                    <circle cx="65" cy="50" r="8" fill="currentColor"/>
+                    <line x1="50" y1="50" x2="50" y2="30" stroke="currentColor" stroke-width="3"/>
+                    <line x1="50" y1="50" x2="65" y2="50" stroke="currentColor" stroke-width="3"/>
+                    <text x="50" y="75" text-anchor="middle" fill="currentColor" font-size="14" font-weight="bold">24/7</text>
+                </svg>
+                <h3 class="feature-title">دعم 24/7</h3>
+                <p>فريق متخصص لخدمتك على مدار اليوم</p>
+            </div>
+            <div class="feature-card">
+                <svg class="icon" viewBox="0 0 100 100">
+                    <rect x="25" y="30" width="40" height="40" fill="none" stroke="currentColor" stroke-width="2"/>
+                    <path d="M10 50 L40 50 L30 40 M40 50 L30 60" fill="none" stroke="currentColor" stroke-width="3"/>
+                    <line x1="70" y1="40" x2="90" y2="40" stroke="currentColor" stroke-width="2"/>
+                    <line x1="70" y1="50" x2="90" y2="50" stroke="currentColor" stroke-width="2"/>
+                    <line x1="70" y1="60" x2="90" y2="60" stroke="currentColor" stroke-width="2"/>
+                    <text x="50" y="85" text-anchor="middle" fill="currentColor" font-size="12">EXPRESS</text>
+                </svg>
+                <h3 class="feature-title">شحن سريع</h3>
+                <p>توصيل سريع لجميع الطلبات</p>
+            </div>
+            <div class="feature-card">
+                <svg class="icon" viewBox="0 0 100 100">
+                    <path d="M50 10 L80 25 L80 60 L50 90 L20 60 L20 25 Z" fill="none" stroke="currentColor" stroke-width="2"/>
+                    <path d="M35 50 L45 60 L65 40" fill="none" stroke="currentColor" stroke-width="4"/>
+                    <path d="M20 20 L22 25 L18 25 Z" fill="currentColor"/>
+                    <path d="M80 20 L82 25 L78 25 Z" fill="currentColor"/>
+                    <path d="M50 85 L52 90 L48 90 Z" fill="currentColor"/>
+                </svg>
+                <h3 class="feature-title">ضمان الجودة</h3>
+                <p>نضمن لك أعلى معايير الجودة مع إمكانية الاسترجاع</p>
+            </div>
+            <div class="feature-card">
+                <svg class="icon" viewBox="0 0 100 100">
+                    <path d="M20 40 C40 40, 40 20, 60 20 L70 20 L65 15 M70 20 L65 25" fill="none" stroke="currentColor" stroke-width="3"/>
+                    <path d="M80 60 C60 60, 60 80, 40 80 L30 80 L35 75 M30 80 L35 85" fill="none" stroke="currentColor" stroke-width="3"/>
+                    <text x="50" y="55" text-anchor="middle" fill="currentColor" font-size="16" font-weight="bold">14</text>
+                    <text x="50" y="70" text-anchor="middle" fill="currentColor" font-size="12">يوم</text>
+                </svg>
+                <h3 class="feature-title">استبدال سهل</h3>
+                <p>سياسة استبدال مرنة خلال 14 يوم</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section testimonials">
+        <h2 class="section-title">آراء عملائنا</h2>
+        <div class="testimonial-container">
+            <div class="testimonial-wrapper">
+                <div class="testimonial-track">
+
+                    <div class="testimonial-card">
+                        <div class="testimonial-header">
+                            <i data-lucide="user" class="testimonial-avatar"></i>
+                            <div class="testimonial-info">
+                                <h4 class="testimonial-name">دكتور هاني كمال</h4>
+                                <div class="testimonial-stars">★★★★★</div>
+                            </div>
+                        </div>
+                        <p class="testimonial-text">وصلت البلزرات خامه ممتازه وتعامل راقي ونتعامل معكم دايما.</p>
+                    </div>
+                    <div class="testimonial-card">
+                        <div class="testimonial-header">
+                            <i data-lucide="user" class="testimonial-avatar"></i>
+                            <div class="testimonial-info">
+                                <h4 class="testimonial-name">مهندس احمد شيبه </h4>
+                                <div class="testimonial-stars">★★★★★</div>
+                            </div>
+                        </div>
+                        <p class="testimonial-text">استلمت البدله و اللون جميل  جدا والخامه جميله بصراحه شكرا ليكم </p>
+                    </div>
+                    <div class="testimonial-card">
+                        <div class="testimonial-header">
+                            <i data-lucide="user" class="testimonial-avatar"></i>
+                            <div class="testimonial-info">
+                                <h4 class="testimonial-name">احمد عبدالله</h4>
+                                <div class="testimonial-stars">★★★★★</div>
+                            </div>
+                        </div>
+                        <p class="testimonial-text">استلمت تسعه قطع وخامه ممتازه وتعامل راقي</p>
+                    </div>
+                    <div class="testimonial-card">
+                        <div class="testimonial-header">
+                            <i data-lucide="user" class="testimonial-avatar"></i>
+                            <div class="testimonial-info">
+                                <h4 class="testimonial-name">دكتور بشير المالك</h4>
+                                <div class="testimonial-stars">★★★★★</div>
+                            </div>
+                        </div>
+                        <p class="testimonial-text">شكرا ليكم يسعدني التعامل معكم</p>
+                    </div>
+                    <div class="testimonial-card">
+                        <div class="testimonial-header">
+                            <i data-lucide="user" class="testimonial-avatar"></i>
+                            <div class="testimonial-info">
+                                <h4 class="testimonial-name">عماد الصعيدي</h4>
+                                <div class="testimonial-stars">★★★★★</div>
+                            </div>
+                        </div>
+                        <p class="testimonial-text">الشغل عالي اشكركم </p>
+                    </div>
+                    <div class="testimonial-card">
+                        <div class="testimonial-header">
+                            <i data-lucide="user" class="testimonial-avatar"></i>
+                            <div class="testimonial-info">
+                                <h4 class="testimonial-name">اويس</h4>
+                                <div class="testimonial-stars">★★★★★</div>
+                            </div>
+                        </div>
+                        <p class="testimonial-text">كل الامور تمام وان شاء الله  ما اخر تعامل .</p>
+                    </div>
+                    
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <p>جميع الحقوق محفوظة © 2025 Business Model</p>
+        <div class="contact-info">
+        </div>
+    </footer>
+
+    <script>
+
+document.addEventListener('DOMContentLoaded', function() {
+        lucide.createIcons();
+        
+        const track = document.querySelector('.testimonial-track');
+        const cards = Array.from(track.children);
+        
+
+        cards.forEach(card => {
+            const clone = card.cloneNode(true);
+            track.appendChild(clone);
+        });
+        
+
+        track.addEventListener('mouseenter', () => {
+            track.style.animationPlayState = 'paused';
+        });
+        
+        track.addEventListener('mouseleave', () => {
+            track.style.animationPlayState = 'running';
+        });
+    });
+
+        lucide.createIcons();
+    </script>
+</body>
+</html>
