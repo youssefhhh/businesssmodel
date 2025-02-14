@@ -1271,13 +1271,14 @@ function addToCart() {
 
     const color = document.getElementById('colorSelect').value || 'N/A';
 
-    if (productCategory === 'منوعاتت') {
-        const product = findProductInCategory('منوعاتت', productName);
-        const productPrice = parseInt(document.getElementById('totalPrice').textContent.replace('السعر: ', '').replace(' ريال', ''));
+    if (productCategory === 'منوعاتت' || productCategory === 'عطور-سيمي-اورجينال') {
+        const product = findProductInCategory(productCategory, productName);
+
+        const basePrice = product.prices[quantity];
         
         const cartProduct = {
             name: productName,
-            price: productPrice,
+            price: basePrice, 
             quantity: quantity,
             size: document.getElementById('sizeSelect').value || 'N/A',
             area: !document.getElementById('areaSelect').value 
@@ -1293,29 +1294,8 @@ function addToCart() {
         return;
     }
     
-    if (productCategory === 'عطور-سيمي-اورجينال') {
-    const product = findProductInCategory('عطور-سيمي-اورجينال', productName);
-    const productPrice = parseInt(document.getElementById('totalPrice').textContent.replace('السعر: ', '').replace(' ريال', ''));
     
-    const cartProduct = {
-        name: productName,
-        price: productPrice,
-        quantity: quantity,
-        size: document.getElementById('sizeSelect').value || 'N/A',
-        area: !document.getElementById('areaSelect').value 
-            ? product.availableAreas[0].name 
-            : document.getElementById('areaSelect').value,
-        color: color 
-    };
-
-    cart.push(cartProduct);
-    updateCart();
-    closeModal();
-    showNotification('تمت إضافة المنتج إلى السلة');
-    return;
-}
-    
-    const size = document.getElementById('sizeSelect').value;
+const size = document.getElementById('sizeSelect').value;
     const area = document.getElementById('areaSelect').value;
     
     if (!size || !area) {
@@ -1323,17 +1303,28 @@ function addToCart() {
         return;
     }
 
-    const productPrice = parseInt(document.getElementById('totalPrice').textContent.replace('السعر: ', '').replace(' ريال', ''));
-    const product = {
+    const product = findProductInCategory(productCategory, productName);
+    const basePrice = product.prices[quantity];
+    let totalPrice = basePrice;
+    
+
+    if (area) {
+        const selectedArea = product.availableAreas.find(a => a.name === area);
+        if (selectedArea) {
+            totalPrice += selectedArea.deliveryFee;
+        }
+    }
+
+    const cartProduct = {
         name: productName,
-        price: productPrice,
+        price: totalPrice, 
         quantity: quantity,
         size: size,
         area: area,
         color: color 
     };
 
-    cart.push(product);
+    cart.push(cartProduct);
     updateCart();
     closeModal();
     showNotification('تمت إضافة المنتج إلى السلة');
@@ -1353,7 +1344,6 @@ function updateCart() {
     let total = 0;
 
     cart.forEach((item, index) => {
-
         let foundProduct = null;
         for (let category in products) {
             foundProduct = products[category].find(p => p.name === item.name);
@@ -1372,7 +1362,7 @@ function updateCart() {
                 <p>المقاس: ${item.size}</p>
                 <p>المكان: ${item.area}</p>
                 <p>اللون: ${item.color}</p>
-                <p>السعر: ${item.price * item.quantity} ${currencyLabel}</p>
+                <p>السعر: ${item.price} ${currencyLabel}</p>
             </div>
             <div class="cart-item-actions">
                 <button onclick="updateQuantity(${index}, -1)">
@@ -1396,7 +1386,7 @@ function updateCart() {
         `;
 
         cartItemsContainer.appendChild(cartItem);
-        total += item.price * item.quantity;
+        total += item.price; 
     });
 
     let totalCurrencyLabel = 'ريال';
