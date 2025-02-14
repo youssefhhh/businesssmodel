@@ -1256,12 +1256,18 @@ function addToCart() {
     const productName = document.getElementById('modalProductName').textContent;
     
     let productCategory;
+    let product;
+    
     for (let category in products) {
-        if (products[category].some(p => p.name === productName)) {
+        const foundProduct = products[category].find(p => p.name === productName);
+        if (foundProduct) {
+            product = foundProduct;
             productCategory = category;
             break;
         }
     }
+    
+    if (!product) return;
     
     const quantity = parseInt(document.getElementById('quantitySelect').value);
     if (!quantity || quantity <= 0) {
@@ -1270,21 +1276,30 @@ function addToCart() {
     }
 
     const color = document.getElementById('colorSelect').value || 'N/A';
+    
+    const basePrice = product.prices[quantity];
+    
+    let deliveryFee = 0;
+    const areaSelect = document.getElementById('areaSelect');
+    if (areaSelect.value) {
+        const selectedArea = product.availableAreas.find(area => area.name === areaSelect.value);
+        if (selectedArea) {
+            deliveryFee = selectedArea.deliveryFee;
+        }
+    }
 
+    const finalPrice = basePrice + deliveryFee;
+    
     if (productCategory === 'منوعاتت' || productCategory === 'عطور-سيمي-اورجينال') {
-        const product = findProductInCategory(productCategory, productName);
-
-        const basePrice = product.prices[quantity];
-        
         const cartProduct = {
             name: productName,
-            price: basePrice, 
+            price: finalPrice,
             quantity: quantity,
             size: document.getElementById('sizeSelect').value || 'N/A',
-            area: !document.getElementById('areaSelect').value 
-                ? product.availableAreas[0].name 
-                : document.getElementById('areaSelect').value,
-            color: color 
+            area: !areaSelect.value ? product.availableAreas[0].name : areaSelect.value,
+            color: color,
+            basePrice: basePrice,
+            deliveryFee: deliveryFee
         };
 
         cart.push(cartProduct);
@@ -1294,34 +1309,23 @@ function addToCart() {
         return;
     }
     
-    
-const size = document.getElementById('sizeSelect').value;
-    const area = document.getElementById('areaSelect').value;
+    const size = document.getElementById('sizeSelect').value;
+    const area = areaSelect.value;
     
     if (!size || !area) {
         alert("يرجى تعبئة جميع الحقول المطلوبة (المقاس والمنطقة)");
         return;
     }
 
-    const product = findProductInCategory(productCategory, productName);
-    const basePrice = product.prices[quantity];
-    let totalPrice = basePrice;
-    
-
-    if (area) {
-        const selectedArea = product.availableAreas.find(a => a.name === area);
-        if (selectedArea) {
-            totalPrice += selectedArea.deliveryFee;
-        }
-    }
-
     const cartProduct = {
         name: productName,
-        price: totalPrice, 
+        price: finalPrice,
         quantity: quantity,
         size: size,
         area: area,
-        color: color 
+        color: color,
+        basePrice: basePrice,
+        deliveryFee: deliveryFee
     };
 
     cart.push(cartProduct);
@@ -1333,7 +1337,7 @@ const size = document.getElementById('sizeSelect').value;
 function findProductInCategory(category, productName) {
     return products[category].find(p => p.name === productName);
 }
-
+    
 
 function updateCart() {
     const cartItemsContainer = document.getElementById('cartItems');
@@ -1352,6 +1356,8 @@ function updateCart() {
         
         const currencyLabel = foundProduct ? foundProduct.currencyLabel || 'ريال' : 'ريال';
         
+        const itemTotal = item.price;
+        
         const cartItem = document.createElement('div');
         cartItem.className = 'cart-item';
 
@@ -1362,7 +1368,7 @@ function updateCart() {
                 <p>المقاس: ${item.size}</p>
                 <p>المكان: ${item.area}</p>
                 <p>اللون: ${item.color}</p>
-                <p>السعر: ${item.price} ${currencyLabel}</p>
+                <p>السعر: ${itemTotal} ${currencyLabel}</p>
             </div>
             <div class="cart-item-actions">
                 <button onclick="updateQuantity(${index}, -1)">
@@ -1386,7 +1392,7 @@ function updateCart() {
         `;
 
         cartItemsContainer.appendChild(cartItem);
-        total += item.price; 
+        total += itemTotal;
     });
 
     let totalCurrencyLabel = 'ريال';
@@ -1404,10 +1410,25 @@ function updateCart() {
     cartCount.textContent = cart.length;
 }
 
-
 function updateQuantity(index, delta) {
-    if (cart[index].quantity + delta > 0) {
-        cart[index].quantity += delta;
+    const item = cart[index];
+    const newQuantity = item.quantity + delta;
+    
+    if (newQuantity <= 0) return;
+    
+    let product;
+    for (let category in products) {
+        product = products[category].find(p => p.name === item.name);
+        if (product) break;
+    }
+    
+    if (product) {
+        const newBasePrice = product.prices[newQuantity];
+        cart[index] = {
+            ...item,
+            quantity: newQuantity,
+            price: newBasePrice + item.deliveryFee
+        };
         updateCart();
     }
 }
