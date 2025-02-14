@@ -1409,6 +1409,11 @@ function updateQuantity(index, delta) {
     const item = cart[index];
     const newQuantity = item.quantity + delta;
     
+    if (newQuantity > 5) {
+        showNotification('الحد الأقصى للكمية هو 5 قطع');
+        return;
+    }
+    
     if (newQuantity <= 0) return;
     
     let product;
